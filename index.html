@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>日本あるある 企画リサーチ</title>
+<style>
+:root{--bg:#0f1115;--panel:#171a21;--panel2:#1e222b;--line:#2a2f3a;--fg:#e8eaf0;--dim:#9aa3b2;
+      --accent:#4da3ff;--gold:#ffd23f;--ok:#3ddc84;--warn:#ff8a5c;--pink:#ff6b9d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.6 -apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+a{color:var(--accent)}
+header{position:sticky;top:0;z-index:30;background:#0f1115ee;backdrop-filter:blur(8px);
+       border-bottom:1px solid var(--line);padding:10px 16px}
+.hrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+h1{font-size:16px;margin:0;letter-spacing:.02em}
+.stat{color:var(--dim);font-size:12px}
+.stat b{color:var(--fg)}
+.tabs{display:flex;gap:6px;margin-left:auto}
+.tab{background:var(--panel);border:1px solid var(--line);color:var(--dim);padding:6px 14px;
+     border-radius:8px;cursor:pointer;font-size:13px}
+.tab.on{background:var(--accent);border-color:var(--accent);color:#08101c;font-weight:700}
+main{padding:14px 16px 60px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 14px}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--dim);padding:4px 11px;
+      border-radius:999px;cursor:pointer;font-size:12px;user-select:none}
+.chip.on{background:#2b3a52;border-color:var(--accent);color:#cfe4ff}
+input,select{background:var(--panel);border:1px solid var(--line);color:var(--fg);
+             padding:6px 10px;border-radius:8px;font-size:13px}
+
+/* ---- セット ---- */
+.set{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.set-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.sub{font-size:17px;font-weight:700;color:var(--gold)}
+.sub[contenteditable]:focus{outline:1px solid var(--accent);border-radius:4px}
+.meta{color:var(--dim);font-size:12px}
+.btn{background:var(--ok);color:#06240f;border:0;padding:7px 14px;border-radius:8px;
+     cursor:pointer;font-weight:700;font-size:13px}
+.btn:disabled{background:#39414f;color:var(--dim);cursor:default}
+.btn.sec{background:var(--panel2);color:var(--fg);border:1px solid var(--line);font-weight:500}
+.row{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:9px}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:9px;overflow:hidden;
+      cursor:pointer;position:relative}
+.card:hover{border-color:var(--accent)}
+.card .th{width:100%;aspect-ratio:9/13;object-fit:cover;display:block;background:#000}
+.card .ph{width:100%;aspect-ratio:9/13;display:flex;align-items:center;justify-content:center;
+          background:linear-gradient(140deg,#232838,#171a21);color:var(--dim);font-size:26px}
+.card .cb{padding:6px 8px}
+.card .cap{font-size:11.5px;line-height:1.45;height:3em;overflow:hidden;color:#d3d8e3}
+.rank{position:absolute;top:5px;left:5px;background:#000c;color:var(--gold);font-weight:800;
+      padding:2px 7px;border-radius:6px;font-size:12px}
+.plat{position:absolute;top:5px;right:5px;background:#000c;padding:2px 6px;border-radius:6px;font-size:10px}
+.vw{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,#000d);
+    padding:12px 7px 4px;font-size:11.5px;font-weight:700}
+.emo{display:inline-block;background:#2b3a52;color:#cfe4ff;padding:1px 7px;border-radius:999px;
+     font-size:10.5px;margin:2px 3px 0 0}
+.emo.g{background:#3a2f52;color:#e0cfff}
+.xb{color:var(--warn);font-weight:700}
+
+/* ---- テーブル（テーマ） ---- */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--dim);font-weight:500;font-size:12px;position:sticky;top:52px;background:var(--bg)}
+tr:hover td{background:var(--panel)}
+.bar{height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;background:var(--accent)}
+
+/* ---- プレイヤー（画面中央） ---- */
+#pl{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:60}
+#pl.on{display:flex}
+#plbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;
+       max-width:min(430px,92vw);max-height:92vh;overflow:auto}
+#plbox iframe,#plbox video{width:100%;aspect-ratio:9/16;border:0;border-radius:9px;background:#000}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ok);
+       color:#06240f;padding:9px 20px;border-radius:9px;font-weight:700;z-index:80;display:none}
+.warnbar{background:#3a2418;border:1px solid var(--warn);color:#ffd9c7;padding:8px 12px;
+         border-radius:9px;margin-bottom:12px;font-size:12.5px}
+.empty{color:var(--dim);padding:30px;text-align:center}
+</style></head><body>
+
+<header><div class="hrow">
+  <h1>日本あるある 企画リサーチ</h1>
+  <span class="stat" id="stat"></span>
+  <div class="tabs">
+    <button class="tab on" data-v="sets">🎬 セット</button>
+    <button class="tab" data-v="clips">📼 素材</button>
+    <button class="tab" data-v="themes">🧭 ジャンル</button>
+  </div>
+</div></header>
+
+<main>
+  <div id="pubnote" class="warnbar" style="display:none;background:#16233a;border-color:#2f4a72;color:#c9d8f0">
+    共有版です。素材は<b>一般人がSNSに上げたオーガニック投稿だけ</b>（TikTok / Instagram）に絞ってあります。
+    カードをクリックすると元投稿を開けます。素材の一括DLは手元のMacでのみ動きます。
+  </div>
+  <div id="dlwarn" class="warnbar" style="display:none">
+    ⬇DLを使うには、Macで <code>python3 scripts/dl_server.py</code> を起動してください（未接続）
+  </div>
+  <div id="bar"></div>
+  <div id="view"></div>
+</main>
+
+<div id="pl" onclick="if(event.target.id==='pl')closePl()"><div id="plbox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+let D={sets:[],clips:[],themes:[],stats:{}}, V="sets", F={t:"",p:"",e:"",q:""}, DLOK=false;
+const $=s=>document.querySelector(s), fmt=n=>n>=1e8?(n/1e8).toFixed(2)+"億":n>=1e4?Math.round(n/1e4)+"万":(n||0).toLocaleString();
+const PL={YT:"YouTube",TT:"TikTok",IG:"Instagram"}, PI={YT:"▶",TT:"♪",IG:"◎"};
+
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";setTimeout(()=>t.style.display="none",1800);}
+
+/* ---------- プレイヤー（クリックで中央に開く / 同じものを再クリックで閉じる） ---------- */
+let curPlay=null;
+function play(c){
+  if(curPlay===c.id){closePl();return;}
+  curPlay=c.id;
+  let inner="";
+  if(c.p==="YT"){const id=(c.u.match(/shorts\/([\w-]+)/)||[])[1];
+    inner=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1" allow="autoplay" allowfullscreen></iframe>`;}
+  else inner=`<div style="padding:26px;text-align:center;color:var(--dim)">
+      ${PL[c.p]}は埋め込み再生ができないので、元投稿を開きます</div>`;
+  $("#plbox").innerHTML=inner+`
+    <div style="margin-top:9px;font-size:12.5px;line-height:1.7">
+      <div style="color:#d3d8e3">${esc(c.c)}</div>
+      <div class="meta">@${esc(c.a)} ・ ${fmt(c.v)}回 ${c.x>1?`・<span class="xb">×${c.x}</span>`:""} ${c.d?`・${c.d}秒`:""}</div>
+      ${c.hn?`<div class="meta" style="margin-top:5px">冒頭3秒: ${esc(c.hn)}</div>`:""}
+      <div style="margin-top:8px">${(c.e||[]).map(e=>`<span class="emo">${e}</span>`).join("")}</div>
+      <div style="margin-top:10px;display:flex;gap:7px">
+        <a class="btn sec" style="text-decoration:none" href="${c.u}" target="_blank" rel="noopener">元投稿を開く</a>
+        <button class="btn sec" onclick="navigator.clipboard.writeText('${c.u}');toast('URLをコピーしました')">URLをコピー</button>
+      </div>
+    </div>`;
+  $("#pl").classList.add("on");
+  if(c.p!=="YT")window.open(c.u,"_blank","noopener");
+}
+function closePl(){$("#pl").classList.remove("on");$("#plbox").innerHTML="";curPlay=null;}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closePl();});
+const esc=s=>(s||"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+
+/* ---------- 右クリックでサムネカードをコピー（Docに貼る用） ---------- */
+async function copyCard(c,ev){
+  ev.preventDefault();
+  const html=`<div><img src="${c.th||""}" width="200"><br>
+    <b>${esc(c.c)}</b><br>${PL[c.p]} / @${esc(c.a)} / ${fmt(c.v)}回${c.x>1?` / ×${c.x}`:""}<br>
+    <a href="${c.u}">${c.u}</a></div>`;
+  const txt=`${c.c}\n${PL[c.p]} @${c.a} ${fmt(c.v)}回\n${c.u}`;
+  try{await navigator.clipboard.write([new ClipboardItem({
+    "text/html":new Blob([html],{type:"text/html"}),
+    "text/plain":new Blob([txt],{type:"text/plain"})})]);toast("カードをコピーしました");}
+  catch(e){await navigator.clipboard.writeText(txt);toast("テキストをコピーしました");}
+}
+
+function cardHtml(c,rank){
+  const th=c.th?`<img class="th" loading="lazy" src="${c.th}">`:`<div class="ph">${PI[c.p]}</div>`;
+  return `<div class="card" onclick='play(${JSON.stringify(c).replace(/'/g,"&#39;")})'
+       oncontextmenu='copyCard(${JSON.stringify(c).replace(/'/g,"&#39;")},event)'>
+    ${rank?`<div class="rank">${rank}位</div>`:""}
+    <div class="plat">${PI[c.p]} ${c.p}</div>${th}
+    <div class="vw">${fmt(c.v)}回 ${c.x>1?`<span class="xb">×${c.x}</span>`:""}</div>
+    <div class="cb"><div class="cap">${esc(c.c)}</div>
+      <div>${(c.e||[]).map(e=>`<span class="emo">${e}</span>`).join("")||'<span class="emo g">—</span>'}</div>
+    </div></div>`;
+}
+
+/* ---------- ① セット ---------- */
+function renderSets(){
+  $("#bar").innerHTML="";
+  if(!D.sets.length){$("#view").innerHTML=`<div class="empty">まだセットがありません。<br>
+    <code>python3 scripts/build_sets.py</code> を実行してください。</div>`;return;}
+  $("#view").innerHTML=D.sets.map(s=>`
+    <div class="set">
+      <div class="set-head">
+        <span class="sub" contenteditable spellcheck="false">${esc(s.sub)}</span>
+        <span class="meta">${s.t} ・ ${s.clips.length}本 ・ 完成尺目安${s.dur}秒 ・ 感情${s.e.length}種</span>
+        <span>${s.e.map(e=>`<span class="emo">${e}</span>`).join("")}</span>
+        <span style="margin-left:auto;display:flex;gap:7px">
+          <button class="btn sec" onclick="copySet('${s.id}')">📋 一覧をコピー</button>
+          ${D.pub?"":`<button class="btn" id="b_${s.id}" onclick="dl('${s.id}')">⬇ この${s.clips.length}本をDL</button>`}
+        </span>
+      </div>
+      <div class="row">${s.clips.map((c,i)=>cardHtml(c,s.clips.length-i)).join("")}</div>
+    </div>`).join("");
+}
+function copySet(id){
+  const s=D.sets.find(x=>x.id===id);
+  const t=[`■ ${s.sub}`,`テーマ: ${s.t} / 感情: ${s.e.join("、")}`,""]
+    .concat(s.clips.map((c,i)=>`${i+1}. [${s.clips.length-i}位] ${c.c}\n   ${PL[c.p]} @${c.a} ${fmt(c.v)}回\n   ${c.u}`)).join("\n");
+  navigator.clipboard.writeText(t);toast("セットをコピーしました");
+}
+
+/* ---------- ⬇ ワンクリックDL ---------- */
+async function dl(id){
+  const b=$("#b_"+id);
+  if(!DLOK){toast("DLサーバーが起動していません");return;}
+  b.disabled=true;b.textContent="DL中…";
+  try{
+    const j=await(await fetch(`http://localhost:${D.dl_port}/dl?set=${id}`)).json();
+    if(j.error){b.textContent="失敗";toast(j.error);return;}
+    const timer=setInterval(async()=>{
+      const s=await(await fetch(`http://localhost:${D.dl_port}/status?job=${j.job}`)).json();
+      if(s.state==="running")b.textContent=`DL中 ${s.done}/${s.total}`;
+      if(s.state==="done"){clearInterval(timer);b.textContent="✓ "+(s.msg||"完了");
+        toast("Finderで開きました: "+(s.folder||""));}
+      if(s.state==="error"){clearInterval(timer);b.textContent="失敗";b.disabled=false;toast(s.msg||"エラー");}
+    },1500);
+  }catch(e){b.disabled=false;b.textContent="⬇ 再試行";toast("DLサーバーに接続できません");}
+}
+
+/* ---------- ② 素材 ---------- */
+function renderClips(){
+  const themes=[...new Set(D.clips.map(c=>c.g).filter(Boolean))].sort();
+  $("#bar").innerHTML=`
+    <div class="chips">
+      <input id="q" placeholder="キャプション検索" value="${esc(F.q)}" style="width:210px">
+      <select id="ft"><option value="">全ジャンル</option>${themes.map(t=>
+        `<option ${F.t===t?"selected":""}>${t}</option>`).join("")}</select>
+      ${["","YT","TT","IG"].map(p=>`<span class="chip ${F.p===p?"on":""}" data-p="${p}">${p?PI[p]+" "+PL[p]:"全媒体"}</span>`).join("")}
+      ${["",...D.emos].map(e=>`<span class="chip ${F.e===e?"on":""}" data-e="${e}">${e||"全感情"}</span>`).join("")}
+    </div>`;
+  $("#q").oninput=e=>{F.q=e.target.value;draw();};
+  $("#ft").onchange=e=>{F.t=e.target.value;renderClips();};
+  document.querySelectorAll("[data-p]").forEach(el=>el.onclick=()=>{F.p=el.dataset.p;renderClips();});
+  document.querySelectorAll("[data-e]").forEach(el=>el.onclick=()=>{F.e=el.dataset.e;renderClips();});
+  draw();
+  function draw(){
+    const q=F.q.toLowerCase();
+    const list=D.clips.filter(c=>(!F.t||c.g===F.t)&&(!F.p||c.p===F.p)
+      &&(!F.e||(c.e||[]).includes(F.e))&&(!q||(c.c||"").toLowerCase().includes(q)));
+    $("#view").innerHTML=list.length
+      ?`<div class="meta" style="margin-bottom:8px">${list.length}本</div><div class="row">${list.map(c=>cardHtml(c,0)).join("")}</div>`
+      :`<div class="empty">条件に合う素材がありません</div>`;
+  }
+}
+
+/* ---------- ③ ジャンル（競合の実測から逆算した需要表） ---------- */
+function renderThemes(){
+  $("#bar").innerHTML=`<div class="meta" style="margin-bottom:10px">
+    <b style="color:var(--gold)">需要の一次ソースは笑ンク（217本・平均673万回）だけ。</b>
+    競合7chのうち日本の一般人あるあるを詰め合わせているのは笑ンク1つで、残り6chは海外バズ動画の
+    詰め合わせ（海外素材率51〜100%）。混ぜて集計すると海外素材ビジネスの需要を読むことになるので分けてある。<br>
+    「国内プール」は7ch全部の日本語タイトルぶん＝量産2ch（平均14〜32万回）に引っ張られるので参考値。
+    <span class="xb">本数が5本未満のジャンルは中央値が当てにならない</span>（★印）。</div>`;
+  const G=(D.groups||[]).filter(g=>g.mn||g.rn||g.n),
+        mx=Math.max(...G.map(g=>g.mmed),1);
+  $("#view").innerHTML=`<table><thead><tr>
+      <th>ジャンル</th><th>手本の実績<br><span class="meta">笑ンク 本数/中央値/最高</span></th><th></th>
+      <th>国内プール<br><span class="meta">本数/中央値</span></th>
+      <th>手元の素材</th><th>組める?</th>
+      <th>この中の細かい切り口（素材数 / 競合最高）</th></tr></thead><tbody>
+    ${G.map(g=>`<tr>
+      <td><b style="font-size:15px">${g.g}</b>${g.mn&&g.mn<5?' <span class="xb" title="本数が少なく中央値が不安定">★</span>':''}</td>
+      <td>${g.mn?`${g.mn}本 / <b style="color:var(--gold)">${fmt(g.mmed)}</b> / 最高 ${fmt(g.mmax)}`
+                :'<span class="meta">手本には無い切り口</span>'}</td>
+      <td><div class="bar"><i style="width:${Math.round(g.mmed/mx*100)}%"></i></div></td>
+      <td class="meta">${g.rn?`${g.rn}本 / ${fmt(g.rmed)}`:'—'}</td>
+      <td>${g.n?`<b>${g.n}</b>本`:'<span class="meta">—</span>'}</td>
+      <td>${g.n>=5?'<span style="color:var(--ok)">✓ 組める</span>':
+            g.n>=3?'<span style="color:var(--gold)">あと少し</span>':
+            '<span class="meta">素材不足</span>'}</td>
+      <td class="meta" style="font-size:11.5px">${(g.subs||[]).map(s=>
+        `<span class="emo ${s[1]?'':'g'}">${s[0]}${s[1]?` ${s[1]}本`:""}${s[2]?` / ${fmt(s[2])}`:""}</span>`).join("")}</td>
+    </tr>`).join("")}</tbody></table>`;
+}
+
+/* ---------- 起動 ---------- */
+function switchV(v){V=v;document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  ({sets:renderSets,clips:renderClips,themes:renderThemes})[v]();}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>switchV(b.dataset.v));
+
+fetch("data.json",{cache:"no-cache"}).then(r=>r.json()).then(d=>{
+  D=d;
+  const a=d.stats.accounts||{};
+  $("#stat").innerHTML=`素材 <b>${d.stats.clips}</b>本 ・ セット <b>${d.stats.sets}</b>件 ・
+    巡回先 <b>${Object.values(a).reduce((x,y)=>x+y,0)}</b>アカウント ・ 競合 <b>${d.stats.rivals}</b>本分析 ・
+    <span style="font-size:11px">${d.updated}</span>`;
+  switchV("sets");
+  if(d.pub){ $("#pubnote").style.display="block"; }
+  else fetch(`http://localhost:${d.dl_port}/ping`).then(r=>r.json()).then(()=>{DLOK=true;})
+    .catch(()=>{$("#dlwarn").style.display="block";});
+});
+</script></body></html>
